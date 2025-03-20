@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodIQ Demo</title>
+    <style>
+        /* Base styles */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --text-color: #2c3e50;
+            --light-text: #7f8c8d;
+            --background: #f5f5f5;
+            --card-background: #ffffff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* Layout */
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0;
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--primary-color);
+            padding: 20px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .tagline {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* Main content */
+        .content {
+            padding: 20px;
+            padding-bottom: 70px; /* Space for navbar */
+        }
+        
+        /* Food quality score */
+        .fqs-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .fqs-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--secondary-color) 0% 75%,
+                var(--background) 75% 100%
+            );
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .fqs-inner {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .fqs-score {
+            font-size: 42px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .fqs-label {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+        
+        /* Food items */
+        .section-title {
+            margin: 20px 0 15px 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .food-item {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .food-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+        
+        .food-info {
+            flex: 1;
+        }
+        
+        .food-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .food-details {
+            font-size: 13px;
+            color: var(--light-text);
+        }
+        
+        .food-score {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .score-high {
+            background-color: var(--secondary-color);
+        }
+        
+        .score-medium {
+            background-color: var(--warning-color);
+        }
+        
+        .score-low {
+            background-color: var(--danger-color);
+        }
+        
+        /* Scanner button */
+        .scan-button {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 24px;
+            z-index: 100;
+        }
+        
+        /* Bottom navbar */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: var(--light-text);
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+        
+        .nav-active {
+            color: var(--primary-color);
+        }
+        
+        /* Food details modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .food-detail-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .food-detail-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+        }
+        
+        .food-detail-info {
+            flex: 1;
+        }
+        
+        .food-detail-name {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .food-detail-subinfo {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+        
+        .food-detail-score {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .score-breakdown {
+            margin-top: 20px;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .breakdown-label {
+            font-size: 14px;
+        }
+        
+        .breakdown-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .breakdown-bar {
+            height: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin-top: 5px;
+            position: relative;
+        }
+        
+        .breakdown-fill {
+            height: 100%;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+        }
+        
+        .nutrients-section {
+            margin-top: 20px;
+        }
+        
+        /* Scanner modal */
+        .scanner-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        
+        .scanner-header {
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .scanner-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .scanner-frame {
+            width: 80%;
+            height: 250px;
+            border: 2px solid white;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            animation: scan 2s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        .scanner-footer {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .scanner-cancel {
+            background-color: white;
+            color: var(--text-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="logo">FoodIQ</div>
+            <div class="tagline">Revolutionizing Food Quality Scoring</div>
+        </div>
+        
+        <div class="content">
+            <div class="fqs-container">
+                <div class="fqs-circle">
+                    <div class="fqs-inner">
+                        <div class="fqs-score">7.5</div>
+                        <div class="fqs-label">Daily FQS</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="section-title">Today's Food</h3>
+            
+            <div class="food-item" onclick="showFoodDetails('apple')">
+                <div class="food-icon">🍎</div>
+                <div class="food-info">
+                    <div class="food-name">Organic Apple</div>
+                    <div class="food-details">Breakfast • 95 calories</div>
+                </div>
+                <div class="food-score score-high">8.7</div>
+            </div>
+            
+            <div class="food-item" onclick="showFoodDetails('salad')">
+                <div class="food-icon">🥗</div>
+                <div class="food-info">
+                    <div class="food-name">Grilled Chicken Salad</div>
+                    <div class="food-details">Lunch • 320 calories</div>
+                </div>
+                <div class="food-score score-high">7.9</div>
+            </div>
+            
+            <div class="food-item" onclick="showFoodDetails('sandwich')">
+                <div class="food-icon">🥪</div>
+                <div class="food-info">
+                    <div class="food-name">Turkey Sandwich</div>
+                    <div class="food-details">Lunch • 450 calories</div>
+                </div>
+                <div class="food-score score-medium">5.3</div>
+            </div>
+            
+            <div class="food-item" onclick="showFoodDetails('cookie')">
+                <div class="food-icon">🍪</div>
+                <div class="food-info">
+                    <div class="food-name">Chocolate Chip Cookie</div>
+                    <div class="food-details">Snack • 180 calories</div>
+                </div>
+                <div class="food-score score-low">2.8</div>
+            </div>
+            
+            <h3 class="section-title">Recommended for You</h3>
+            
+            <div class="food-item" onclick="showFoodDetails('yogurt')">
+                <div class="food-icon">🥛</div>
+                <div class="food-info">
+                    <div class="food-name">Greek Yogurt with Berries</div>
+                    <div class="food-details">High protein • 150 calories</div>
+                </div>
+                <div class="food-score score-high">9.2</div>
+            </div>
+            
+            <div class="food-item" onclick="showFoodDetails('salmon')">
+                <div class="food-icon">🐟</div>
+                <div class="food-info">
+                    <div class="food-name">Grilled Salmon</div>
+                    <div class="food-details">Omega-3 rich • 280 calories</div>
+                </div>
+                <div class="food-score score-high">8.9</div>
+            </div>
+        </div>
+        
+        <div class="scan-button" onclick="openScanner()">
+            📷
+        </div>
+        
+        <div class="navbar">
+            <div class="nav-item nav-active">
+                <div class="nav-icon">📊</div>
+                <div>Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🍽️</div>
+                <div>Meals</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📈</div>
+                <div>Progress</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div>Profile</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Food Details Modal -->
+    <div id="foodModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('foodModal')">&times;</span>
+            <div id="foodDetailContent"></div>
+        </div>
+    </div>
+    
+    <!-- Scanner Modal -->
+    <div id="scannerModal" class="scanner-modal">
+        <div class="scanner-header">
+            <h2>Scan Food Item</h2>
+            <p>Position barcode within the frame</p>
+        </div>
+        <div class="scanner-content">
+            <div class="scanner-frame">
+                <div class="scanner-line"></div>
+            </div>
+        </div>
+        <div class="scanner-footer">
+            <button class="scanner-cancel" onclick="closeModal('scannerModal')">Cancel</button>
+        </div>
+    </div>
+    
+    <script>
+        // Food details data
+        const foodDetails = {
+            apple: {
+                name: "Organic Apple",
+                icon: "🍎",
+                details: "Breakfast • 95 calories",
+                score: 8.7,
+                scoreClass: "score-high",
+                breakdown: {
+                    nutrition: 9.0,
+                    processing: 9.5,
+                    additives: 10.0,
+                    sustainability: 8.0,
+                    bioavailability: 8.2
+                },
+                nutrients: [
+                    { name: "Fiber", value: "4.4g", percent: 16 },
+                    { name: "Vitamin C", value: "8.4mg", percent: 9 },
+                    { name: "Potassium", value: "195mg", percent: 4 },
+                    { name: "Carbs", value: "25g", percent: 8 }
+                ],
+                description: "Apples are an excellent source of fiber and vitamin C. They're low in calories and high in water content, making them a filling snack."
+            },
+            salad: {
+                name: "Grilled Chicken Salad",
+                icon: "🥗",
+                details: "Lunch • 320 calories",
+                score: 7.9,
+                scoreClass: "score-high",
+                breakdown: {
+                    nutrition: 8.5,
+                    processing: 7.0,
+                    additives: 8.0,
+                    sustainability: 7.5,
+                    bioavailability: 8.5
+                },
+                nutrients: [
+                    { name: "Protein", value: "28g", percent: 56 },
+                    { name: "Fiber", value: "6g", percent: 24 },
+                    { name: "Vitamin A", value: "735µg", percent: 82 },
+                    { name: "Iron", value: "2.5mg", percent: 14 }
+                ],
+                description: "This salad combines lean protein from grilled chicken with a variety of vegetables, providing a balanced meal rich in vitamins and minerals."
+            },
+            sandwich: {
+                name: "Turkey Sandwich",
+                icon: "🥪",
+                details: "Lunch • 450 calories",
+                score: 5.3,
+                scoreClass: "score-medium",
+                breakdown: {
+                    nutrition: 6.0,
+                    processing: 4.5,
+                    additives: 5.0,
+                    sustainability: 5.5,
+                    bioavailability: 6.0
+                },
+                nutrients: [
+                    { name: "Protein", value: "22g", percent: 44 },
+                    { name: "Fiber", value: "3g", percent: 12 },
+                    { name: "Sodium", value: "850mg", percent: 37 },
+                    { name: "Carbs", value: "45g", percent: 15 }
+                ],
+                description: "While this sandwich provides good protein, the bread is processed and the overall sodium content is high. Consider using whole grain bread and adding more vegetables."
+            },
+            cookie: {
+                name: "Chocolate Chip Cookie",
+                icon: "🍪",
+                details: "Snack • 180 calories",
+                score: 2.8,
+                scoreClass: "score-low",
+                breakdown: {
+                    nutrition: 2.0,
+                    processing: 2.5,
+                    additives: 3.0,
+                    sustainability: 3.5,
+                    bioavailability: 3.0
+                },
+                nutrients: [
+                    { name: "Sugar", value: "15g", percent: 30 },
+                    { name: "Fat", value: "9g", percent: 14 },
+                    { name: "Carbs", value: "24g", percent: 8 },
+                    { name: "Protein", value: "2g", percent: 4 }
+                ],
+                description: "This cookie is high in refined sugars and fats with minimal nutritional value. It's processed with several additives and provides little to no beneficial nutrients."
+            },
+            yogurt: {
+                name: "Greek Yogurt with Berries",
+                icon: "🥛",
+                details: "High protein • 150 calories",
+                score: 9.2,
+                scoreClass: "score-high",
+                breakdown: {
+                    nutrition: 9.5,
+                    processing: 8.5,
+                    additives: 9.0,
+                    sustainability: 8.5,
+                    bioavailability: 9.5
+                },
+                nutrients: [
+                    { name: "Protein", value: "15g", percent: 30 },
+                    { name: "Calcium", value: "200mg", percent: 15 },
+                    { name: "Vitamin C", value: "12mg", percent: 13 },
+                    { name: "Probiotics", value: "High", percent: 0 }
+                ],
+                description: "Greek yogurt with fresh berries provides high-quality protein, calcium, and beneficial probiotics. The berries add antioxidants and vitamin C, making this a nutrient-dense snack."
+            },
+            salmon: {
+                name: "Grilled Salmon",
+                icon: "🐟",
+                details: "Omega-3 rich • 280 calories",
+                score: 8.9,
+                scoreClass: "score-high",
+                breakdown: {
+                    nutrition: 9.5,
+                    processing: 9.0,
+                    additives: 10.0,
+                    sustainability: 6.5,
+                    bioavailability: 9.5
+                },
+                nutrients: [
+                    { name: "Protein", value: "22g", percent: 44 },
+                    { name: "Omega-3", value: "1.8g", percent: 120 },
+                    { name: "Vitamin D", value: "11µg", percent: 55 },
+                    { name: "Vitamin B12", value: "4µg", percent: 167 }
+                ],
+                description: "Salmon is an excellent source of high-quality protein and omega-3 fatty acids. It's also rich in vitamin D and B vitamins, supporting heart and brain health."
+            }
+        };
+        
+        // Function to show food details
+        function showFoodDetails(foodId) {
+            const food = foodDetails[foodId];
+            if (!food) return;
+            
+            let detailContent = `
+                <div class="food-detail-header">
+                    <div class="food-detail-icon">${food.icon}</div>
+                    <div class="food-detail-info">
+                        <div class="food-detail-name">${food.name}</div>
+                        <div class="food-detail-subinfo">${food.details}</div>
+                    </div>
+                    <div class="food-detail-score ${food.scoreClass}">${food.score}</div>
+                </div>
+                
+                <p>${food.description}</p>
+                
+                <div class="score-breakdown">
+                    <h4>FQS Breakdown</h4>
+            `;
+            
+            // Add breakdown bars
+            for (const [key, value] of Object.entries(food.breakdown)) {
+                const percentage = value * 10;
+                const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+                
+                detailContent += `
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">${capitalizedKey}</div>
+                        <div class="breakdown-value">${value}</div>
+                    </div>
+                    <div class="breakdown-bar">
+                        <div class="breakdown-fill" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+            }
+            
+            // Add nutrients section
+            detailContent += `
+                <div class="nutrients-section">
+                    <h4>Key Nutrients</h4>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <th style="text-align: left; padding: 8px 0;">Nutrient</th>
+                            <th style="text-align: right; padding: 8px 0;">Amount</th>
+                            <th style="text-align: right; padding: 8px 0;">% Daily</th>
+                        </tr>
+            `;
+            
+            // Add nutrient rows
+            for (const nutrient of food.nutrients) {
+                detailContent += `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px 0;">${nutrient.name}</td>
+                        <td style="text-align: right; padding: 8px 0;">${nutrient.value}</td>
+                        <td style="text-align: right; padding: 8px 0;">${nutrient.percent}%</td>
+                    </tr>
+                `;
+            }
+            
+            detailContent += `
+                    </table>
+                </div>
+            `;
+            
+            // Set the content and show the modal
+            document.getElementById('foodDetailContent').innerHTML = detailContent;
+            document.getElementById('foodModal').style.display = 'flex';
+        }
+        
+        // Function to open scanner
+        function openScanner() {
+            document.getElementById('scannerModal').style.display = 'flex';
+            
+            // Simulate a scan after 3 seconds
+            setTimeout(() => {
+                closeModal('scannerModal');
+                showFoodDetails('yogurt'); // Show yogurt as a "scanned" item
+            }, 3000);
+        }
+        
+        // Function to close modals
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const foodModal = document.getElementById('foodModal');
+            if (event.target === foodModal) {
+                foodModal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
