@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodIQ App - Test Version</title>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        .tagline {
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        .qr-section {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        .qr-box {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .qr-title {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .qr-subtitle {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        #qrcode-demo {
+            margin: 0 auto;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        .button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        .section {
+            margin: 30px 0;
+        }
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .footer {
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .steps {
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .step {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .step-number {
+            background-color: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .step-text {
+            flex: 1;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+            .logo {
+                font-size: 28px;
+            }
+            .tagline {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">FoodIQ</div>
+            <div class="tagline">Revolutionizing Food Quality Scoring</div>
+        </div>
+        
+        <p>Thank you for participating in the FoodIQ app testing program. Please scan the QR code below to access the demo.</p>
+        
+        <div class="qr-section">
+            <div class="qr-box">
+                <h2 class="qr-title">FoodIQ Demo</h2>
+                <p class="qr-subtitle">Scan with your mobile device camera</p>
+                <div id="qrcode-demo"></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3 class="section-title">How to Test the App</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Scan the QR code with your phone's camera</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Tap the link that appears</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Explore the FoodIQ demo interface</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Send us your feedback via email</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3 class="section-title">Having trouble?</h3>
+            <p>If the QR code doesn't work, use this direct link:</p>
+            <a class="button" href="https://nextgr8.github.io/FoodIQ/index.html" id="demo-link" target="_blank">Open Demo</a>
+        </div>
+        
+        <div class="section">
+            <h3 class="section-title">Feedback and Support</h3>
+            <p>Please send your feedback, bug reports, and questions to:</p>
+            <p><a href="mailto:davidoyedele06@gmail.com">davidoyedele06@gmail.com</a></p>
+        </div>
+        
+        <div class="footer">
+            <p>FoodIQ App &copy; 2023 - All rights reserved</p>
+        </div>
+    </div>
+    
+    <script>
+        // This URL is already correct for your GitHub Pages site
+        const demoAppLink = "https://nextgr8.github.io/FoodIQ/index.html";
+        
+        // Set direct link
+        document.getElementById('demo-link').href = demoAppLink;
+        
+        // Generate QR code
+        new QRCode(document.getElementById("qrcode-demo"), {
+            text: demoAppLink,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>
